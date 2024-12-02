@@ -287,9 +287,11 @@ extension NextLevelSessionExporter {
             dispatchGroup.enter()
             videoInput.requestMediaDataWhenReady(on: self._inputQueue, using: {
                 if self.encode(readySamplesFromReaderOutput: videoOutput, toWriterInput: videoInput) == false {
-                    if !self._videoLeftDispatchGroup {
-                        self._videoLeftDispatchGroup = true
-                        dispatchGroup.leave()
+                    DispatchQueue.main.async {
+                        if !self._videoLeftDispatchGroup {
+                            self._videoLeftDispatchGroup = true
+                            dispatchGroup.leave()
+                        }
                     }
                 }
             })
@@ -300,9 +302,11 @@ extension NextLevelSessionExporter {
             dispatchGroup.enter()
             audioInput.requestMediaDataWhenReady(on: self._inputQueue, using: {
                 if self.encode(readySamplesFromReaderOutput: audioOutput, toWriterInput: audioInput) == false {
-                    if !self._audioLeftDispatchGroup {
-                        self._audioLeftDispatchGroup = true
-                        dispatchGroup.leave()
+                    DispatchQueue.main.async {
+                        if !self._audioLeftDispatchGroup {
+                            self._audioLeftDispatchGroup = true
+                            dispatchGroup.leave()
+                        }
                     }
                 }
             })
