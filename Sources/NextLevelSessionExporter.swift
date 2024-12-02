@@ -143,6 +143,9 @@ open class NextLevelSessionExporter: NSObject {
     
     fileprivate var _duration: TimeInterval = 0
     fileprivate var _lastSamplePresentationTime: CMTime = .invalid
+
+    fileprivate var _videoLeftDispatchGroup = false
+    fileprivate var _audioLeftDispatchGroup = false
     
     // MARK: - object lifecycle
     
@@ -284,7 +287,10 @@ extension NextLevelSessionExporter {
             dispatchGroup.enter()
             videoInput.requestMediaDataWhenReady(on: self._inputQueue, using: {
                 if self.encode(readySamplesFromReaderOutput: videoOutput, toWriterInput: videoInput) == false {
-                    dispatchGroup.leave()
+                    if !self._videoLeftDispatchGroup {
+                        self._videoLeftDispatchGroup = true
+                        dispatchGroup.leave()
+                    }
                 }
             })
         } 
@@ -294,7 +300,10 @@ extension NextLevelSessionExporter {
             dispatchGroup.enter()
             audioInput.requestMediaDataWhenReady(on: self._inputQueue, using: {
                 if self.encode(readySamplesFromReaderOutput: audioOutput, toWriterInput: audioInput) == false {
-                    dispatchGroup.leave()
+                    if !self._audioLeftDispatchGroup {
+                        self._audioLeftDispatchGroup = true
+                        dispatchGroup.leave()
+                    }
                 }
             })
         } 
