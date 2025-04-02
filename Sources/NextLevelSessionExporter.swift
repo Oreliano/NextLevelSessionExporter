@@ -582,9 +582,11 @@ extension NextLevelSessionExporter {
         if self._reader?.status == .cancelled || self._writer?.status == .cancelled {
             self.complete()
         } else if self._writer?.status == .failed {
+            print("NextLevelSessionExporter, writer failed: \(self._writer?.error)")
             self._reader?.cancelReading()
             self.complete()
         } else if self._reader?.status == .failed {
+            print("NextLevelSessionExporter, reader failed: \(self._reader?.error)")
             self._writer?.cancelWriting()
             self.complete()
         } else {
